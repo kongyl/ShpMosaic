@@ -29,82 +29,30 @@ namespace ShpMosaic
         /// </summary>
         private void InitializeComponent()
         {
-            this.labelShp = new System.Windows.Forms.Label();
-            this.textBoxShp = new System.Windows.Forms.TextBox();
-            this.buttonShp = new System.Windows.Forms.Button();
-            this.openFileDialogShp = new System.Windows.Forms.OpenFileDialog();
-            this.labelIn = new System.Windows.Forms.Label();
-            this.textBoxIn = new System.Windows.Forms.TextBox();
-            this.buttonIn = new System.Windows.Forms.Button();
-            this.folderBrowserDialogIn = new System.Windows.Forms.FolderBrowserDialog();
+            this.labelYear = new System.Windows.Forms.Label();
             this.labelOut = new System.Windows.Forms.Label();
             this.textBoxOut = new System.Windows.Forms.TextBox();
             this.buttonOut = new System.Windows.Forms.Button();
             this.folderBrowserDialogOut = new System.Windows.Forms.FolderBrowserDialog();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.comboBoxYear = new System.Windows.Forms.ComboBox();
+            this.backgroundWorkerProgress = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
-            // labelShp
+            // labelYear
             // 
-            this.labelShp.AutoSize = true;
-            this.labelShp.Location = new System.Drawing.Point(12, 17);
-            this.labelShp.Name = "labelShp";
-            this.labelShp.Size = new System.Drawing.Size(100, 24);
-            this.labelShp.TabIndex = 0;
-            this.labelShp.Text = "选择矢量：";
-            // 
-            // textBoxShp
-            // 
-            this.textBoxShp.Location = new System.Drawing.Point(118, 14);
-            this.textBoxShp.Name = "textBoxShp";
-            this.textBoxShp.ReadOnly = true;
-            this.textBoxShp.Size = new System.Drawing.Size(930, 30);
-            this.textBoxShp.TabIndex = 1;
-            // 
-            // buttonShp
-            // 
-            this.buttonShp.Location = new System.Drawing.Point(1054, 12);
-            this.buttonShp.Name = "buttonShp";
-            this.buttonShp.Size = new System.Drawing.Size(112, 34);
-            this.buttonShp.TabIndex = 2;
-            this.buttonShp.Text = "浏览";
-            this.buttonShp.UseVisualStyleBackColor = true;
-            // 
-            // openFileDialogShp
-            // 
-            this.openFileDialogShp.FileName = "openFileDialog1";
-            // 
-            // labelIn
-            // 
-            this.labelIn.AutoSize = true;
-            this.labelIn.Location = new System.Drawing.Point(12, 57);
-            this.labelIn.Name = "labelIn";
-            this.labelIn.Size = new System.Drawing.Size(100, 24);
-            this.labelIn.TabIndex = 3;
-            this.labelIn.Text = "影像路径：";
-            // 
-            // textBoxIn
-            // 
-            this.textBoxIn.Location = new System.Drawing.Point(118, 54);
-            this.textBoxIn.Name = "textBoxIn";
-            this.textBoxIn.ReadOnly = true;
-            this.textBoxIn.Size = new System.Drawing.Size(930, 30);
-            this.textBoxIn.TabIndex = 4;
-            // 
-            // buttonIn
-            // 
-            this.buttonIn.Location = new System.Drawing.Point(1054, 52);
-            this.buttonIn.Name = "buttonIn";
-            this.buttonIn.Size = new System.Drawing.Size(112, 34);
-            this.buttonIn.TabIndex = 5;
-            this.buttonIn.Text = "浏览";
-            this.buttonIn.UseVisualStyleBackColor = true;
+            this.labelYear.AutoSize = true;
+            this.labelYear.Location = new System.Drawing.Point(12, 17);
+            this.labelYear.Name = "labelYear";
+            this.labelYear.Size = new System.Drawing.Size(100, 24);
+            this.labelYear.TabIndex = 0;
+            this.labelYear.Text = "选择年份：";
             // 
             // labelOut
             // 
             this.labelOut.AutoSize = true;
-            this.labelOut.Location = new System.Drawing.Point(12, 97);
+            this.labelOut.Location = new System.Drawing.Point(12, 55);
             this.labelOut.Name = "labelOut";
             this.labelOut.Size = new System.Drawing.Size(100, 24);
             this.labelOut.TabIndex = 6;
@@ -112,7 +60,7 @@ namespace ShpMosaic
             // 
             // textBoxOut
             // 
-            this.textBoxOut.Location = new System.Drawing.Point(118, 94);
+            this.textBoxOut.Location = new System.Drawing.Point(118, 52);
             this.textBoxOut.Name = "textBoxOut";
             this.textBoxOut.ReadOnly = true;
             this.textBoxOut.Size = new System.Drawing.Size(930, 30);
@@ -120,25 +68,27 @@ namespace ShpMosaic
             // 
             // buttonOut
             // 
-            this.buttonOut.Location = new System.Drawing.Point(1054, 92);
+            this.buttonOut.Location = new System.Drawing.Point(1054, 50);
             this.buttonOut.Name = "buttonOut";
             this.buttonOut.Size = new System.Drawing.Size(112, 34);
             this.buttonOut.TabIndex = 8;
             this.buttonOut.Text = "浏览";
             this.buttonOut.UseVisualStyleBackColor = true;
+            this.buttonOut.Click += new System.EventHandler(this.buttonOut_Click);
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(936, 132);
+            this.buttonOk.Location = new System.Drawing.Point(936, 90);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(112, 34);
             this.buttonOk.TabIndex = 9;
             this.buttonOk.Text = "开始";
             this.buttonOk.UseVisualStyleBackColor = true;
+            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(1054, 132);
+            this.buttonCancel.Location = new System.Drawing.Point(1054, 90);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(112, 34);
             this.buttonCancel.TabIndex = 10;
@@ -146,23 +96,38 @@ namespace ShpMosaic
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // comboBoxYear
+            // 
+            this.comboBoxYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxYear.FormattingEnabled = true;
+            this.comboBoxYear.Items.AddRange(new object[] {
+            "2000",
+            "2010",
+            "2020"});
+            this.comboBoxYear.Location = new System.Drawing.Point(118, 14);
+            this.comboBoxYear.Name = "comboBoxYear";
+            this.comboBoxYear.Size = new System.Drawing.Size(182, 32);
+            this.comboBoxYear.TabIndex = 11;
+            this.comboBoxYear.SelectedIndexChanged += new System.EventHandler(this.comboBoxYear_SelectedIndexChanged);
+            // 
+            // backgroundWorkerProgress
+            // 
+            this.backgroundWorkerProgress.WorkerReportsProgress = true;
+            this.backgroundWorkerProgress.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerProgress_DoWork);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1178, 183);
+            this.ClientSize = new System.Drawing.Size(1178, 138);
             this.ControlBox = false;
+            this.Controls.Add(this.comboBoxYear);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.buttonOut);
             this.Controls.Add(this.textBoxOut);
             this.Controls.Add(this.labelOut);
-            this.Controls.Add(this.buttonIn);
-            this.Controls.Add(this.textBoxIn);
-            this.Controls.Add(this.labelIn);
-            this.Controls.Add(this.buttonShp);
-            this.Controls.Add(this.textBoxShp);
-            this.Controls.Add(this.labelShp);
+            this.Controls.Add(this.labelYear);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -174,13 +139,10 @@ namespace ShpMosaic
 
         #endregion
 
-        private System.Windows.Forms.Label labelShp;
+        private System.Windows.Forms.Label labelYear;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button buttonShp;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBoxIn;
-        private System.Windows.Forms.Button buttonIn;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Label labelOut;
         private System.Windows.Forms.TextBox textBoxOut;
@@ -188,13 +150,11 @@ namespace ShpMosaic
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog2;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.TextBox textBoxShp;
-        private System.Windows.Forms.OpenFileDialog openFileDialogShp;
-        private System.Windows.Forms.Label labelIn;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogIn;
         private System.Windows.Forms.Button buttonOut;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogOut;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.ComboBox comboBoxYear;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerProgress;
     }
 }
 
