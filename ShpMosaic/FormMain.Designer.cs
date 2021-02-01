@@ -43,34 +43,38 @@ namespace ShpMosaic
             // labelYear
             // 
             this.labelYear.AutoSize = true;
-            this.labelYear.Location = new System.Drawing.Point(12, 17);
+            this.labelYear.Location = new System.Drawing.Point(8, 12);
+            this.labelYear.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelYear.Name = "labelYear";
-            this.labelYear.Size = new System.Drawing.Size(100, 24);
+            this.labelYear.Size = new System.Drawing.Size(68, 17);
             this.labelYear.TabIndex = 0;
             this.labelYear.Text = "选择年份：";
             // 
             // labelOut
             // 
             this.labelOut.AutoSize = true;
-            this.labelOut.Location = new System.Drawing.Point(12, 55);
+            this.labelOut.Location = new System.Drawing.Point(8, 41);
+            this.labelOut.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelOut.Name = "labelOut";
-            this.labelOut.Size = new System.Drawing.Size(100, 24);
+            this.labelOut.Size = new System.Drawing.Size(68, 17);
             this.labelOut.TabIndex = 6;
             this.labelOut.Text = "输出路径：";
             // 
             // textBoxOut
             // 
-            this.textBoxOut.Location = new System.Drawing.Point(118, 52);
+            this.textBoxOut.Location = new System.Drawing.Point(75, 38);
+            this.textBoxOut.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxOut.Name = "textBoxOut";
             this.textBoxOut.ReadOnly = true;
-            this.textBoxOut.Size = new System.Drawing.Size(930, 30);
+            this.textBoxOut.Size = new System.Drawing.Size(593, 23);
             this.textBoxOut.TabIndex = 7;
             // 
             // buttonOut
             // 
-            this.buttonOut.Location = new System.Drawing.Point(1054, 50);
+            this.buttonOut.Location = new System.Drawing.Point(672, 37);
+            this.buttonOut.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonOut.Name = "buttonOut";
-            this.buttonOut.Size = new System.Drawing.Size(112, 34);
+            this.buttonOut.Size = new System.Drawing.Size(71, 24);
             this.buttonOut.TabIndex = 8;
             this.buttonOut.Text = "浏览";
             this.buttonOut.UseVisualStyleBackColor = true;
@@ -78,9 +82,10 @@ namespace ShpMosaic
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(936, 90);
+            this.buttonOk.Location = new System.Drawing.Point(597, 65);
+            this.buttonOk.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(112, 34);
+            this.buttonOk.Size = new System.Drawing.Size(71, 24);
             this.buttonOk.TabIndex = 9;
             this.buttonOk.Text = "开始";
             this.buttonOk.UseVisualStyleBackColor = true;
@@ -88,9 +93,10 @@ namespace ShpMosaic
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(1054, 90);
+            this.buttonCancel.Location = new System.Drawing.Point(672, 65);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(112, 34);
+            this.buttonCancel.Size = new System.Drawing.Size(71, 24);
             this.buttonCancel.TabIndex = 10;
             this.buttonCancel.Text = "取消";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -104,9 +110,10 @@ namespace ShpMosaic
             "2000",
             "2010",
             "2020"});
-            this.comboBoxYear.Location = new System.Drawing.Point(118, 14);
+            this.comboBoxYear.Location = new System.Drawing.Point(75, 9);
+            this.comboBoxYear.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBoxYear.Name = "comboBoxYear";
-            this.comboBoxYear.Size = new System.Drawing.Size(182, 32);
+            this.comboBoxYear.Size = new System.Drawing.Size(117, 25);
             this.comboBoxYear.TabIndex = 11;
             this.comboBoxYear.SelectedIndexChanged += new System.EventHandler(this.comboBoxYear_SelectedIndexChanged);
             // 
@@ -117,9 +124,9 @@ namespace ShpMosaic
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1178, 138);
+            this.ClientSize = new System.Drawing.Size(750, 98);
             this.ControlBox = false;
             this.Controls.Add(this.comboBoxYear);
             this.Controls.Add(this.buttonCancel);
@@ -129,6 +136,7 @@ namespace ShpMosaic
             this.Controls.Add(this.labelOut);
             this.Controls.Add(this.labelYear);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "镶嵌";
@@ -140,16 +148,9 @@ namespace ShpMosaic
         #endregion
 
         private System.Windows.Forms.Label labelYear;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Label labelOut;
         private System.Windows.Forms.TextBox textBoxOut;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog2;
         private System.Windows.Forms.Button buttonOk;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button buttonOut;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogOut;
         private System.Windows.Forms.Button buttonCancel;

@@ -99,13 +99,21 @@ namespace ShpMosaic
                         inDss[j] = Gdal.Open("r2000\\" + nameList[j], Access.GA_ReadOnly);
                     }
                     string outFile = string.Format("{0}\\{1:D3}.tif", outPath, code);
-                    Dataset outDs = Gdal.Warp(outPath, inDss, gdalOptions, gdalProgressFunc, null);
-                    outDs.FlushCache();
-                    outDs.Dispose();
+                    try
+                    {
+                        Dataset outDs = Gdal.Warp(outFile, inDss, gdalOptions, gdalProgressFunc, null);
+                        outDs.FlushCache();
+                        outDs.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
                 }
 
                 progressInfo.Info = string.Format("已完成：{0}/{1}", i + 1, codeNum);
-                totalProgress = i * 100 / codeNum;
+                totalProgress = (i + 1) * 100 / codeNum;
                 reportProgress();
             }
 
