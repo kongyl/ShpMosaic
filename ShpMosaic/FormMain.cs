@@ -96,7 +96,7 @@ namespace ShpMosaic
                     Dataset[] inDss = new Dataset[nameCount];
                     for (int j = 0; j < nameCount; j++)
                     {
-                        inDss[j] = Gdal.Open("r2000\\" + nameList[j], Access.GA_ReadOnly);
+                        inDss[j] = Gdal.Open(string.Format("r{0}\\{1}", year, nameList[j]), Access.GA_ReadOnly);
                     }
                     string outFile = string.Format("{0}\\{1:D3}.tif", outPath, code);
                     try
