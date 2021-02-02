@@ -31,59 +31,54 @@ namespace ShpMosaic
         {
             this.labelSub = new System.Windows.Forms.Label();
             this.progressBarSub = new System.Windows.Forms.ProgressBar();
-            this.labelProgress = new System.Windows.Forms.Label();
-            this.progressBarProgress = new System.Windows.Forms.ProgressBar();
-            this.backgroundWorkerProgress = new System.ComponentModel.BackgroundWorker();
+            this.labelMain = new System.Windows.Forms.Label();
+            this.progressBarMain = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorkerMain = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // labelSub
             // 
             this.labelSub.AutoSize = true;
-            this.labelSub.Location = new System.Drawing.Point(8, 6);
-            this.labelSub.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelSub.Location = new System.Drawing.Point(12, 9);
             this.labelSub.Name = "labelSub";
-            this.labelSub.Size = new System.Drawing.Size(56, 17);
+            this.labelSub.Size = new System.Drawing.Size(53, 12);
             this.labelSub.TabIndex = 0;
-            this.labelSub.Text = "查询影像";
+            this.labelSub.Text = "开始镶嵌";
             // 
             // progressBarSub
             // 
-            this.progressBarSub.Location = new System.Drawing.Point(8, 26);
-            this.progressBarSub.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.progressBarSub.Location = new System.Drawing.Point(12, 24);
             this.progressBarSub.Name = "progressBarSub";
-            this.progressBarSub.Size = new System.Drawing.Size(480, 24);
+            this.progressBarSub.Size = new System.Drawing.Size(560, 23);
             this.progressBarSub.TabIndex = 1;
             // 
-            // labelProgress
+            // labelMain
             // 
-            this.labelProgress.AutoSize = true;
-            this.labelProgress.Location = new System.Drawing.Point(8, 52);
-            this.labelProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.labelProgress.Name = "labelProgress";
-            this.labelProgress.Size = new System.Drawing.Size(56, 17);
-            this.labelProgress.TabIndex = 2;
-            this.labelProgress.Text = "已完成：";
+            this.labelMain.AutoSize = true;
+            this.labelMain.Location = new System.Drawing.Point(12, 50);
+            this.labelMain.Name = "labelMain";
+            this.labelMain.Size = new System.Drawing.Size(59, 12);
+            this.labelMain.TabIndex = 2;
+            this.labelMain.Text = "已完成：0";
             // 
-            // progressBarProgress
+            // progressBarMain
             // 
-            this.progressBarProgress.Location = new System.Drawing.Point(8, 71);
-            this.progressBarProgress.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.progressBarProgress.Name = "progressBarProgress";
-            this.progressBarProgress.Size = new System.Drawing.Size(480, 24);
-            this.progressBarProgress.TabIndex = 3;
+            this.progressBarMain.Location = new System.Drawing.Point(14, 65);
+            this.progressBarMain.Name = "progressBarMain";
+            this.progressBarMain.Size = new System.Drawing.Size(558, 23);
+            this.progressBarMain.TabIndex = 3;
             // 
             // FormProgress
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 104);
+            this.ClientSize = new System.Drawing.Size(584, 100);
             this.ControlBox = false;
-            this.Controls.Add(this.progressBarProgress);
-            this.Controls.Add(this.labelProgress);
+            this.Controls.Add(this.progressBarMain);
+            this.Controls.Add(this.labelMain);
             this.Controls.Add(this.progressBarSub);
             this.Controls.Add(this.labelSub);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "FormProgress";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "正在镶嵌";
@@ -96,8 +91,8 @@ namespace ShpMosaic
 
         private System.Windows.Forms.Label labelSub;
         private System.Windows.Forms.ProgressBar progressBarSub;
-        private System.Windows.Forms.Label labelProgress;
-        private System.ComponentModel.BackgroundWorker backgroundWorkerProgress;
-        private System.Windows.Forms.ProgressBar progressBarProgress;
+        private System.Windows.Forms.Label labelMain;
+        private System.Windows.Forms.ProgressBar progressBarMain;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerMain;
     }
 }

@@ -6,27 +6,27 @@ namespace ShpMosaic
 {
     public partial class FormProgress : Form
     {
-        public FormProgress(BackgroundWorker backgroundWorkerProgress)
+        public FormProgress(BackgroundWorker backgroundWorkerMain)
         {
             InitializeComponent();
 
-            this.backgroundWorkerProgress = backgroundWorkerProgress;
-            this.backgroundWorkerProgress.ProgressChanged += new ProgressChangedEventHandler(backgroundWorkerProgress_ProgressChanged);
-            this.backgroundWorkerProgress.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerProgress_RunWorkerCompleted);
+            this.backgroundWorkerMain = backgroundWorkerMain;
+            this.backgroundWorkerMain.ProgressChanged += new ProgressChangedEventHandler(backgroundWorkerMain_ProgressChanged);
+            this.backgroundWorkerMain.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerMain_RunWorkerCompleted);
         }
 
-        private void backgroundWorkerProgress_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void backgroundWorkerMain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Close();
         }
 
-        private void backgroundWorkerProgress_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void backgroundWorkerMain_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressBarProgress.Value = e.ProgressPercentage;
+            progressBarMain.Value = e.ProgressPercentage;
             ProgressInfo progressInfo = (ProgressInfo)e.UserState;
             progressBarSub.Value = progressInfo.SubComplete;
             labelSub.Text = progressInfo.SubInfo;
-            labelProgress.Text = progressInfo.Info;
+            labelMain.Text = progressInfo.Info;
         }
     }
 }

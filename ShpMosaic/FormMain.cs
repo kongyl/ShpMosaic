@@ -11,11 +11,11 @@ namespace ShpMosaic
 {
     public partial class FormMain : Form
     {
+        private int year;
+        private string outPath;
         private ProgressInfo progressInfo;
         private GDALWarpAppOptions gdalOptions;
         private int totalProgress;
-        private int year;
-        private string outPath;
 
         public FormMain()
         {
@@ -40,19 +40,12 @@ namespace ShpMosaic
             totalProgress = 0;
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
-        {
-            Dispose();
-        }
-
         private void buttonOut_Click(object sender, EventArgs e)
         {
-            textBoxOut.Text = "";
-            outPath = "";
+            outPath = textBoxOut.Text = "";
             if (folderBrowserDialogOut.ShowDialog() == DialogResult.OK)
             {
-                textBoxOut.Text = folderBrowserDialogOut.SelectedPath;
-                outPath = folderBrowserDialogOut.SelectedPath;
+                outPath = textBoxOut.Text = folderBrowserDialogOut.SelectedPath;
             }
         }
 
@@ -64,19 +57,29 @@ namespace ShpMosaic
                 return;
             }
 
-            backgroundWorkerProgress.RunWorkerAsync();
-            FormProgress formProgress = new FormProgress(backgroundWorkerProgress);
+            backgroundWorkerMain.RunWorkerAsync();
+            FormProgress formProgress = new FormProgress(backgroundWorkerMain);
             formProgress.ShowDialog(this);
         }
 
-        private void backgroundWorkerProgress_DoWork(object sender, DoWorkEventArgs e)
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            Dispose();
+        }
+
+        private void comboBoxYear_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            year = 2000 + 10 * comboBoxYear.SelectedIndex;
+        }
+
+        private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
         {
             progressInfo.SubInfo = "获取矢量信息";
             reportProgress();
             List<long> codeList = CountryDao.FindAllCode();
             if (codeList == null || codeList.Count == 0)
             {
-                MessageBox.Show("矢量没有正确的code_new信息，请重新挂载");
+                MessageBox.Show("矢量没有正确的code_new信息，请重新注册");
                 return;
             }
 
@@ -96,7 +99,7 @@ namespace ShpMosaic
                     Dataset[] inDss = new Dataset[nameCount];
                     for (int j = 0; j < nameCount; j++)
                     {
-                        inDss[j] = Gdal.Open(string.Format("r{0}\\{1}", year, nameList[j]), Access.GA_ReadOnly);
+                        inDss[j] = Gdal.Open(string.Format("img\\r{0}\\{1}", year, nameList[j]), Access.GA_ReadOnly);
                     }
                     string outFile = string.Format("{0}\\{1:D3}.tif", outPath, code);
                     try
@@ -122,7 +125,7 @@ namespace ShpMosaic
 
         private void reportProgress()
         {
-            backgroundWorkerProgress.ReportProgress(totalProgress, progressInfo);
+            backgroundWorkerMain.ReportProgress(totalProgress, progressInfo);
         }
 
         private int gdalProgressFunc(double complete, IntPtr message, IntPtr data)
@@ -138,11 +141,6 @@ namespace ShpMosaic
                 reportProgress();
             }
             return 1;
-        }
-
-        private void comboBoxYear_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            year = 2000 + 10 * comboBoxYear.SelectedIndex;
         }
     }
 }
