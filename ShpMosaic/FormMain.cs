@@ -1,4 +1,5 @@
 ﻿using OSGeo.GDAL;
+using OSGeo.OGR;
 using ShpMosaic.Dao;
 using ShpMosaic.Model;
 using System;
@@ -14,7 +15,6 @@ namespace ShpMosaic
         private int year;
         private string outPath;
         private ProgressInfo progressInfo;
-        private GDALWarpAppOptions gdalOptions;
         private int totalProgress;
 
         public FormMain()
@@ -25,18 +25,7 @@ namespace ShpMosaic
             year = 2000;
             outPath = "";
             progressInfo = new ProgressInfo(0, "", "已完成：0");
-            Gdal.AllRegister();
-            string[] options = new string[]
-            {
-                "-t_srs", "dst.prj",
-                "-tr", "30", "30",
-                "-srcnodata", "128",
-                "-dstnodata", "0",
-                "-ot", "Byte",
-                "-co", "COMPRESS=LZW",
-                "-co", "TILED=YES"
-            };
-            gdalOptions = new GDALWarpAppOptions(options);
+            Gdal.AllRegister();            
             totalProgress = 0;
         }
 
@@ -74,7 +63,7 @@ namespace ShpMosaic
 
         private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
         {
-            progressInfo.SubInfo = "获取矢量信息";
+            progressInfo.SubInfo = "读取矢量";
             reportProgress();
             List<long> codeList = CountryDao.FindAllCode();
             if (codeList == null || codeList.Count == 0)
@@ -82,37 +71,65 @@ namespace ShpMosaic
                 MessageBox.Show("矢量没有正确的code_new信息，请重新注册");
                 return;
             }
+            DataSource dataSource = Ogr.Open("data\\shp\\dst\\country.shp", 0);
 
             int codeNum = codeList.Count;
             progressInfo.Info = string.Format("已完成：0/{0}", codeNum);
             for (int i = 0; i < codeNum; i++)
             {
                 progressInfo.SubComplete = 0;
-                progressInfo.SubInfo = "查询影像";
+                progressInfo.SubInfo = "查询数据";
                 reportProgress();
 
                 long code = codeList[i];
                 List<string> nameList = ImgDao.findNameByYearAndCode(year, code);
-                int nameCount = nameList.Count;
-                if (nameCount > 0)
+                if (nameList == null || nameList.Count == 0)
                 {
-                    Dataset[] inDss = new Dataset[nameCount];
-                    for (int j = 0; j < nameCount; j++)
+                    continue;
+                }
+
+                Layer layer = dataSource.ExecuteSQL(string.Format("select * from country where Code_new={0}", code), null, null);
+                if (layer.GetFeatureCount(1) == 0)
+                {
+                    continue;
+                }
+                layer.ResetReading();
+                Feature feature = layer.GetNextFeature();
+                Geometry geometry = feature.GetGeometryRef();
+                Envelope envelope = new Envelope();
+                geometry.GetEnvelope(envelope);
+
+                int nameCount = nameList.Count;
+                Dataset[] inDss = new Dataset[nameCount];
+                for (int j = 0; j < nameCount; j++)
+                {
+                    inDss[j] = Gdal.Open(string.Format("data\\img\\r{0}\\{1}", year, nameList[j]), Access.GA_ReadOnly);
+                }
+                string outFile = string.Format("{0}\\{1:D3}.tif", outPath, code);
+                
+
+                try
+                {
+                    string[] options = new string[]
                     {
-                        inDss[j] = Gdal.Open(string.Format("img\\r{0}\\{1}", year, nameList[j]), Access.GA_ReadOnly);
-                    }
-                    string outFile = string.Format("{0}\\{1:D3}.tif", outPath, code);
-                    try
-                    {
-                        Dataset outDs = Gdal.Warp(outFile, inDss, gdalOptions, gdalProgressFunc, null);
-                        outDs.FlushCache();
-                        outDs.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                        return;
-                    }
+                          "-t_srs", "data\\shp\\dst\\country.prj",
+                          "-tr", "30", "30",
+                          "-srcnodata", "128",
+                          "-dstnodata", "0",
+                          "-ot", "Byte",
+                          "-co", "COMPRESS=LZW",
+                          "-co", "TILED=YES",
+                          "-te", envelope.MinX.ToString(), envelope.MinY.ToString(), envelope.MaxX.ToString(), envelope.MaxY.ToString()
+                    };
+                    GDALWarpAppOptions gdalOptions = new GDALWarpAppOptions(options);
+                    Dataset outDs = Gdal.Warp(outFile, inDss, gdalOptions, gdalProgressFunc, null);
+                    outDs.FlushCache();
+                    outDs.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    continue;
                 }
 
                 progressInfo.Info = string.Format("已完成：{0}/{1}", i + 1, codeNum);
