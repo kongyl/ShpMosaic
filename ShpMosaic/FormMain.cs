@@ -24,7 +24,7 @@ namespace ShpMosaic
             comboBoxYear.SelectedIndex = 0;
             year = 2000;
             outPath = "";
-            progressInfo = new ProgressInfo(0, "", "已完成：0");
+            progressInfo = new ProgressInfo(0, "", "", "已完成：0");
             Gdal.AllRegister();            
             totalProgress = 0;
         }
@@ -63,7 +63,7 @@ namespace ShpMosaic
 
         private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
         {
-            progressInfo.SubInfo = "读取矢量";
+            progressInfo.SubTitle = "读取基本信息";
             reportProgress();
             List<long> codeList = CountryDao.FindAllCode();
             if (codeList == null || codeList.Count == 0)
@@ -78,7 +78,7 @@ namespace ShpMosaic
             for (int i = 0; i < codeNum; i++)
             {
                 progressInfo.SubComplete = 0;
-                progressInfo.SubInfo = "查询数据";
+                progressInfo.SubTitle = "查询数据";
                 reportProgress();
 
                 long code = codeList[i];
@@ -106,10 +106,12 @@ namespace ShpMosaic
                     inDss[j] = Gdal.Open(string.Format("data\\img\\r{0}\\{1}", year, nameList[j]), Access.GA_ReadOnly);
                 }
                 string outFile = string.Format("{0}\\{1:D3}.tif", outPath, code);
-                
+                string mosaicFile = "/vsimem/mosaic.tif";
+                string maskFile = "/vsimem/mask.tif";
 
                 try
                 {
+                    progressInfo.SubTitle = "正在镶嵌：";
                     string[] options = new string[]
                     {
                           "-t_srs", "data\\shp\\dst\\country.prj",
@@ -122,8 +124,25 @@ namespace ShpMosaic
                           "-te", envelope.MinX.ToString(), envelope.MinY.ToString(), envelope.MaxX.ToString(), envelope.MaxY.ToString()
                     };
                     GDALWarpAppOptions gdalOptions = new GDALWarpAppOptions(options);
-                    Dataset outDs = Gdal.Warp(outFile, inDss, gdalOptions, gdalProgressFunc, null);
-                    outDs.FlushCache();
+                    Dataset mosaicDs = Gdal.Warp(mosaicFile, inDss, gdalOptions, gdalProgressFunc, null);
+
+                    progressInfo.SubTitle = "正在栅格化";
+                    progressInfo.SubInfo = "";
+                    options = new string[]
+                    {
+                        "-burn", "1",
+                        "-where", string.Format("Code_new={0}", code),
+                        "-ot", "Byte",
+                        "-co", "COMPRESS=LZW",
+                        "-co", "TILED=YES",
+                        "-tr", "30", "30",
+                        "-te", envelope.MinX.ToString(), envelope.MinY.ToString(), envelope.MaxX.ToString(), envelope.MaxY.ToString()
+                    };
+                    GDALRasterizeOptions rasterOptions = new GDALRasterizeOptions(options);
+                    Dataset vecDs = Gdal.OpenEx("data\\shp\\dst\\country.shp", 0, null, null, null);
+                    Dataset maskDs = Gdal.wrapper_GDALRasterizeDestName(maskFile, vecDs, rasterOptions, gdalProgressFunc, null);
+
+                    Dataset outDs = multi(mosaicDs, maskDs, outFile);
                     outDs.Dispose();
                 }
                 catch (Exception ex)
@@ -158,6 +177,49 @@ namespace ShpMosaic
                 reportProgress();
             }
             return 1;
+        }
+
+        private Dataset multi(Dataset oriDs, Dataset maskDs, string outPath)
+        {
+            int blockSize = 10240;
+            int xSize = oriDs.RasterXSize;
+            int leftXSize = xSize;
+            int xOffset = 0;
+            int ySize = oriDs.RasterYSize;
+            int leftYSize = ySize;
+            int yOffset = 0;
+            progressInfo.SubTitle = "正在裁剪";
+            while (leftYSize > 0)
+            {
+                int readYSize = (leftYSize > blockSize) ? blockSize : leftYSize;
+                leftYSize = leftYSize - readYSize;
+
+                xOffset = 0;
+                leftXSize = xSize;
+                while (leftXSize > 0)
+                {
+                    int readXSize = (leftXSize > blockSize) ? blockSize : leftXSize;
+                    leftXSize = leftXSize - readXSize;
+
+                    int totalSize = readXSize * readYSize;
+                    byte[] oriData = new byte[totalSize];
+                    byte[] maskData = new byte[totalSize];
+                    oriDs.ReadRaster(xOffset, yOffset, readXSize, readYSize, oriData, readXSize, readYSize, 1, null, 0, 0, 0);
+                    maskDs.ReadRaster(xOffset, yOffset, readXSize, readYSize, maskData, readXSize, readYSize, 1, null, 0, 0, 0);
+                    for (int i = 0; i < totalSize; i++)
+                    {
+                        oriData[i] = (byte)(oriData[i] * maskData[i]);
+                    }
+                    oriDs.WriteRaster(xOffset, yOffset, readXSize, readYSize, oriData, readXSize, readYSize, 1, null, 0, 0, 0);
+
+                    xOffset = xOffset + readXSize;
+                }
+
+                yOffset = yOffset + readYSize;
+            }
+            progressInfo.SubTitle = "写入影像";
+            OSGeo.GDAL.Driver driver = Gdal.GetDriverByName("GTiff");
+            return driver.CreateCopy(outPath, oriDs, 0, null, gdalProgressFunc, null);
         }
     }
 }

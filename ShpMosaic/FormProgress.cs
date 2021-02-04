@@ -25,7 +25,7 @@ namespace ShpMosaic
             progressBarMain.Value = e.ProgressPercentage;
             ProgressInfo progressInfo = (ProgressInfo)e.UserState;
             progressBarSub.Value = progressInfo.SubComplete;
-            labelSub.Text = progressInfo.SubInfo;
+            labelSub.Text = progressInfo.SubTitle + progressInfo.SubInfo;
             labelMain.Text = progressInfo.Info;
         }
     }
