@@ -219,7 +219,12 @@ namespace ShpMosaic
             }
             progressInfo.SubTitle = "写入影像";
             OSGeo.GDAL.Driver driver = Gdal.GetDriverByName("GTiff");
-            return driver.CreateCopy(outPath, oriDs, 0, null, gdalProgressFunc, null);
+            string[] options = new string[]
+            {
+                "-co", "COMPRESS=LZW",
+                "-co", "TILED=YES"
+            };
+            return driver.CreateCopy(outPath, oriDs, 0, options, gdalProgressFunc, null);
         }
     }
 }
